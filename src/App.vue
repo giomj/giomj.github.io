@@ -9,9 +9,9 @@
         <span style="margin-left:10px;font-weight:600;color:#fff">Giomj</span>
       </div>
       <nav>
-        <a href="#/">Landing</a>
-        <a href="#/kb">Knowledge Base</a>
-        <a href="#/carbon">Carbon Data</a>
+        <a href="#/" @click.prevent="goHome" style="cursor:pointer">Landing</a>
+        <a href="#/kb" @click.prevent="goKB" style="cursor:pointer">Knowledge Base</a>
+        <a href="#/carbon" @click.prevent="() => { location.hash = '#/carbon'; }" style="cursor:pointer">Carbon Data</a>
         <button class="icon-btn" @click="goKB" style="margin-left:12px;padding:6px 8px;border-radius:6px;border:none;cursor:pointer;background:#123; color:#9bd">KB</button>
       </nav>
     </header>
