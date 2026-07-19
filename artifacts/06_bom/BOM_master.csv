@@ -1,0 +1,70 @@
+Category,Ref,Item,Spec,Qty,Marketplace_Low,Marketplace_High,New_Price,Source_Notes
+A_Motors_Mechanical,A1,Motor-under-test (DUT),6.5-inch hoverboard hub motor 36V 350W integrated Halls,1,10,25,60,"Search hoverboard parts scooter motor"
+A_Motors_Mechanical,A2,Load motor,Identical 6.5-inch hoverboard hub,1,10,25,60,Buy A1 and A2 together
+A_Motors_Mechanical,A3,Shaft adapter pair,12mm hub to 8mm keyed shaft,1,30,30,60,Machined or CNC hobbyist trade
+A_Motors_Mechanical,A4,Jaw coupling,Lovejoy L090 8mm bores NBR 92 spider,1,20,35,55,Industrial surplus
+A_Motors_Mechanical,A5,Baseplate,24x12x0.5in 6061-T6 aluminum,1,40,80,130,Machine shop offcut
+A_Motors_Mechanical,A6,Motor brackets,2x 90deg aluminum L-brackets,1,10,10,30,Home Depot
+A_Motors_Mechanical,A7,Fasteners,M6/M8 socket-cap T-nuts washers,1,15,15,25,Hardware store
+A_Motors_Mechanical,A8,Vibration isolators,4x Sorbothane 40-durometer 50lb,1,30,30,50,McMaster
+A_Motors_Mechanical,A9,Coupling guard,1/8in mild steel bent,1,10,10,30,DIY
+B_Batteries_DC,B1,LiFePO4 pack,48V 30-50Ah server-rack EG4 SOK,1,200,350,900,Server rack solar battery
+B_Batteries_DC,B2,Battery cables,4 AWG copper 3ft pair with lugs,1,25,25,40,Welding surplus
+B_Batteries_DC,B3,Bench PSU backup,48V 20A programmable Rigol DP832 or Siglent SPD3303X,1,180,300,500,Used tech surplus
+B_Batteries_DC,B4,Battery balancer,BT BMS shunt Victron JK-BMS,1,60,60,130,Nice to have
+C_Power_Stage,C1,MOSFET,IRFB4110PbF Infineon,8,,,22,Digi-Key
+C_Power_Stage,C2,Gate driver,DRV8353RSRGZR TI,2,,,24,Digi-Key
+C_Power_Stage,C3,Current-sense amp,INA240A2QDRQ1,4,,,19,Digi-Key
+C_Power_Stage,C4,Kelvin shunt,Bourns CSS2H-2512K 1mOhm 3W,4,,,24,Digi-Key
+C_Power_Stage,C5,Bulk cap,Nichicon LGN2A102MELB40 1000uF 100V,4,,,36,Digi-Key
+C_Power_Stage,C6,Film cap,WIMA DC-Link 10uF 100V,2,,,12,Digi-Key
+C_Power_Stage,C7,Ceramic cap,X7R 1uF 100V 1210,20,,,6,Digi-Key
+C_Power_Stage,C8,Ceramic cap,X7R 100nF 100V 0805,40,,,4,Digi-Key
+C_Power_Stage,C9,TVS diode,SMDJ58A,2,,,4,Digi-Key
+C_Power_Stage,C10,Bleeder resistor,10k 2W wirewound,2,,,4,Digi-Key
+C_Power_Stage,C11,Precharge resistor,25 Ohm 25W wirewound Ohmite TCH35,2,,,16,Digi-Key
+C_Power_Stage,C12,Bus voltage divider,Precision resistor kit + OPA320 buffer,1,,,30,Digi-Key
+C_Power_Stage,C13,Heatsink,Wakefield-Vette 673-30ABPE 1.5 degC/W,1,,,22,Digi-Key
+C_Power_Stage,C14,40mm 5V fan,Noctua NF-A4x20 5V,2,,,36,Amazon
+C_Power_Stage,C15,Thermal interface,Kapton TO-220 pad kit + Arctic MX-4,1,,,18,Amazon
+C_Power_Stage,C16,PCB fab,4-layer 2oz outer 100x160mm 5-piece,1,,,80,JLCPCB
+C_Power_Stage,C17,PCB assembly optional,SMT paste stencil hot-plate reflow,1,,,200,DIY
+C_Power_Stage,C18,Bus bar copper,25x3mm bare Cu strip 500mm,1,,,15,Amazon
+C_Power_Stage,C19,Terminal blocks,Phoenix PT 6-HESI,8,,,28,Digi-Key
+C_Power_Stage,C20,Connectors,XT60 XT90 XT30 pairs,6,,,12,Amazon
+C_Power_Stage,C21,Wire,12 AWG silicone stranded 10ft each red/black,1,,,18,Amazon
+C_Power_Stage,C22,Safety latch IC,TPS3702CD30 or SR flip-flop kit,2,,,6,Digi-Key
+C_Power_Stage,C23,Comparators,LM339 or MAX9144,4,,,6,Digi-Key
+D_Sensing_Measurement,D1,Oscilloscope,4ch >=100MHz Rigol DS1054Z or Siglent SDS1104X-E,1,300,600,700,Marketplace verify all channels
+D_Sensing_Measurement,D2,Diff probe,100x diff 700V Micsig or Tek P5205A,1,150,300,500,Critical for bus probing
+D_Sensing_Measurement,D3,Current probe,Micsig or Tek TCPA300/TCP0030 30A,1,400,700,1500,Splurge item
+D_Sensing_Measurement,D4,LCR meter,East Tester ET4410 or DER EE DE-5000,1,150,300,400,For Ld/Lq measurement
+D_Sensing_Measurement,D5,DMM,Fluke 87V or 179 or Brymen BM786,1,80,200,400,Marketplace common
+D_Sensing_Measurement,D6,Thermal camera,FLIR C3-X or older FLIR E4/E5,1,200,400,700,Verify origin
+D_Sensing_Measurement,D7,Bench multimeter optional,6.5-digit Keithley 2000 or HP 34401A,1,200,400,1000,Nice to have
+D_Sensing_Measurement,D8,RTD/thermistor kit,4x PT100 3-wire + 4x 10k NTC,1,30,30,50,Amazon
+D_Sensing_Measurement,D9,Encoder,US Digital E5-1024-118-IE-M-D,1,50,100,135,EKF ground truth
+D_Sensing_Measurement,D10,Torque sensor optional,Futek TRS300 5Nm rotary,1,300,500,2500,Optional excellent validation
+D_Sensing_Measurement,D11,Isolated USB hub,ADuM3160 or Tripp-Lite USB-ISO,1,30,30,80,Protects host PC
+E_Safety,E1,DC contactor,Gigavac GX11BB or Albright SW180,1,80,160,250,Solar/EV contactor
+E_Safety,E2,E-stop button,Idem SPEB dual-channel latching NC,1,60,60,150,Industrial surplus
+E_Safety,E3,Safety relay,Pilz PNOZ e1p or Idem SEM.SU,1,75,75,220,Optional
+E_Safety,E4,DC fuse holder + fuse,Class T holder + 30A fuse,1,30,30,60,Marine/solar
+E_Safety,E5,Polycarbonate,24x24x0.5in clear Lexan MR10,1,60,120,180,Sign shop offcuts
+E_Safety,E6,Enclosure frame,80/20 aluminum extrusion 10ft 1x1 + gussets,1,80,150,250,Marketplace surplus
+E_Safety,E7,Door interlock,Idem SafeMag Ex-L1 or Schmersal AZ 17,1,30,60,130,Industrial surplus
+E_Safety,E8,Class 0 gloves + safety glasses,1000V rated + ANSI Z87.1,1,70,70,110,New only never used PPE
+E_Safety,E9,Fire extinguisher,Class C Kidde 4A:60B:C,1,30,30,50,Home Depot
+F_Bench_Infra,F1,Workbench,6ft steel frame wood top,1,80,200,400,Marketplace
+F_Bench_Infra,F2,Anti-static mat + wrist strap,24x48in ESD-safe,1,40,40,80,Amazon
+F_Bench_Infra,F3,Silicone soldering mat,20x15in,1,20,20,35,Amazon
+F_Bench_Infra,F4,Soldering station,Hakko FX-888D or Weller WE1010NA,1,80,150,200,Marketplace
+F_Bench_Infra,F5,Hot-air rework,858D or similar,1,50,50,100,Amazon
+F_Bench_Infra,F6,Wire strippers side cutters ferrule crimper,Weidmuller or Knipex-clone kit,1,60,60,150,Amazon
+F_Bench_Infra,F7,Load bank dump resistors,5x 4Ohm 100W TO-247 or nichrome coils,1,50,50,150,Marketplace surplus
+G_Firmware_Dev,G1,Nucleo dev board,Nucleo-G474RE,1,,,15,Digi-Key
+G_Firmware_Dev,G2,ST-Link programmer,ST-LINK/V3MINI-E,1,,,28,Digi-Key
+G_Firmware_Dev,G3,Logic analyzer,Saleae Logic 8 clone 24MHz 8ch,1,,,15,Amazon
+G_Firmware_Dev,G4,USB-CAN adapter,CANable Pro or CandleLight,1,,,50,Digi-Key
+G_Firmware_Dev,G5,Breadboard + jumpers,,1,,,20,Amazon
+G_Firmware_Dev,G6,Odd cables,USB-C JTAG IDC,1,,,30,Amazon
