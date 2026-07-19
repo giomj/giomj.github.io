@@ -1,10 +1,17 @@
 <template>
   <div class="app">
     <header>
-      <h1>Giomj — Personal Site</h1>
+      <div class="brand" role="button" tabindex="0" @click="goHome" @keydown.enter="goHome" style="display:flex;align-items:center;cursor:pointer">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="3" y="3" width="18" height="18" rx="3" stroke="#9bd" stroke-width="1.5" fill="none" />
+          <path d="M6 12h12M12 6v12" stroke="#9bd" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+        <span style="margin-left:10px;font-weight:600;color:#fff">Giomj</span>
+      </div>
       <nav>
         <a href="#/">Landing</a>
         <a href="#/kb">Knowledge Base</a>
+        <button class="icon-btn" @click="goKB" style="margin-left:12px;padding:6px 8px;border-radius:6px;border:none;cursor:pointer;background:#123; color:#9bd">KB</button>
       </nav>
     </header>
     <main>
