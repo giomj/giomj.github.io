@@ -11,7 +11,7 @@
       <nav>
         <a href="#/" @click.prevent="goHome" style="cursor:pointer">Landing</a>
         <a href="#/kb" @click.prevent="goKB" style="cursor:pointer">Knowledge Base</a>
-        <a href="#/carbon" @click.prevent="() => { location.hash = '#/carbon'; }" style="cursor:pointer">Carbon Data</a>
+        <a href="#/carbon" @click.prevent="goCarbon" style="cursor:pointer">Carbon Data</a>
         <button class="icon-btn" @click="goKB" style="margin-left:12px;padding:6px 8px;border-radius:6px;border:none;cursor:pointer;background:#123; color:#9bd">KB</button>
       </nav>
     </header>
@@ -44,6 +44,10 @@ export default {
     },
     goKB() {
       location.hash = '#/kb'
+      this.$forceUpdate()
+    },
+    goCarbon() {
+      location.hash = '#/carbon'
       this.$forceUpdate()
     }
   },
