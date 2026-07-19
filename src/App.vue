@@ -11,6 +11,7 @@
       <nav>
         <a href="#/">Landing</a>
         <a href="#/kb">Knowledge Base</a>
+        <a href="#/carbon">Carbon Data</a>
         <button class="icon-btn" @click="goKB" style="margin-left:12px;padding:6px 8px;border-radius:6px;border:none;cursor:pointer;background:#123; color:#9bd">KB</button>
       </nav>
     </header>
@@ -23,14 +24,16 @@
 <script>
 import Landing from './pages/Landing.vue'
 import KnowledgeBase from './pages/KnowledgeBase.vue'
+import Carbon from './pages/Carbon.vue'
 
 export default {
   name: 'App',
-  components: { Landing, KnowledgeBase },
+  components: { Landing, KnowledgeBase, Carbon },
   computed: {
     currentView() {
       const hash = location.hash.replace('#', '') || '/'
       if (hash.startsWith('/kb')) return 'KnowledgeBase'
+      if (hash.startsWith('/carbon')) return 'Carbon'
       return 'Landing'
     }
   },
