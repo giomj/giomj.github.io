@@ -102,6 +102,8 @@ export default {
     } catch (error) {
       console.error('Error loading carbon data:', error)
       this.loading = false
+      this.tableData = []
+      this.stats = null
     }
   },
   methods: {
