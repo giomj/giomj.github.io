@@ -34,6 +34,16 @@ export default {
       return 'Landing'
     }
   },
+  methods: {
+    goHome() {
+      location.hash = '#/'
+      this.$forceUpdate()
+    },
+    goKB() {
+      location.hash = '#/kb'
+      this.$forceUpdate()
+    }
+  },
   mounted() {
     window.addEventListener('hashchange', () => this.$forceUpdate())
   }
