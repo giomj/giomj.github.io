@@ -1,0 +1,3 @@
+html,body,#app { height:100% }
+#app { min-height:100vh }
+canvas { background:#fff }
