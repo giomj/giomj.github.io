@@ -1,0 +1,6 @@
+VLAN,Purpose,Subnet / Example,Notes
+10,Management,192.168.10.0/24,"ESXi mgmt, vCenter"
+20,vMotion,192.168.20.0/24,vmk for vMotion
+30,vSAN,192.168.30.0/24,vmk for vSAN (if used)
+40,Backup/Replication,192.168.40.0/24,Optional
+100,Production,172.16.100.0/24,VM networks (extend as needed)
