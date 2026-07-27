@@ -18,12 +18,37 @@ env:
 
 jobs:
   # ---------------------------------------------------------------------------
+  # Gate: skip everything unless Cloudflare credentials are actually present.
+  # Secrets cannot be referenced in a job-level `if`, so this job exposes them
+  # as an output instead.
+  # ---------------------------------------------------------------------------
+  guard:
+    name: Check Cloudflare config
+    runs-on: ubuntu-latest
+    outputs:
+      configured: ${{ steps.check.outputs.configured }}
+    steps:
+      - id: check
+        env:
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -n "${CF_API_TOKEN}" ] && [ -n "${CF_ACCOUNT_ID}" ] && [ -n "${CF_PROJECT}" ]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Cloudflare secrets not configured - preview deploy skipped."
+          fi
+
+  # ---------------------------------------------------------------------------
   # Build and deploy a preview on every push to an open PR
   # ---------------------------------------------------------------------------
   preview:
     name: Build & deploy preview
-    # Secrets are not exposed to pull_request runs from forks, so skip them
+    needs: guard
+    # Fork PRs get no secrets, and an unconfigured repo should skip, not fail
     if: >-
+      needs.guard.outputs.configured == 'true' &&
       github.event.action != 'closed' &&
       github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
@@ -88,7 +113,9 @@ jobs:
   # ---------------------------------------------------------------------------
   cleanup:
     name: Delete preview deployments
+    needs: guard
     if: >-
+      needs.guard.outputs.configured == 'true' &&
       github.event.action == 'closed' &&
       github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
