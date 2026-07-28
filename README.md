@@ -1,4 +1,17 @@
-rag_assistant
+# giomj.github.io
+
+Personal site and knowledge base for James Gianotti.
+
+## Charters & Working Documents
+
+- [Grand Council — Charter](./Grand%20Council%20%E2%80%94%20Charter.md) — deliberative body governed by the operative definition of creation (ratified 2026-07-27).
+- [gravitational-compass — Charter (DRAFT)](./gravitational-compass%20%E2%80%94%20Charter%20(DRAFT).md)
+
+All charters, chapters, and research notes are also browsable via the site's **Knowledge Base** tab.
+
+---
+
+## Site Infrastructure (RAG Assistant Starter Kit)
 
 RAG Assistant Starter Kit
 Deploy an AI-powered chatbot with document retrieval using App Platform, Serverless Inference, and Knowledge Base.
