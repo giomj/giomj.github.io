@@ -264,22 +264,27 @@ export default {
   margin-bottom: 0.5rem;
 }
 
+/* Banner text targets WCAG AAA (7:1) rather than AA (4.5:1). Status
+   messages carry failure detail, so they need headroom, and the old
+   values sat at 4.92:1 and 4.56:1 — passing, but with no margin.
+   The previous text colors are reused as the border accents, which
+   only need 3:1 as non-text elements. */
 .error {
   background: #ffebee;
   padding: 1rem;
   border-radius: 4px;
-  color: #c62828;
+  color: #a11616;              /* 6.95:1 on #ffebee (was #c62828, 4.92:1) */
   margin-bottom: 1rem;
-  border-left: 4px solid #f44336;
+  border-left: 4px solid #c62828;  /* 4.92:1 (was #f44336, 3.22:1) */
 }
 
 .success {
   background: #e8f5e9;
   padding: 1rem;
   border-radius: 4px;
-  color: #2e7d32;
+  color: #1b5e20;              /* 7.00:1 on #e8f5e9 (was #2e7d32, 4.56:1) */
   margin-bottom: 1rem;
-  border-left: 4px solid #4caf50;
+  border-left: 4px solid #2e7d32;  /* 4.56:1 (was #4caf50, 2.47:1) */
 }
 
 .table {
