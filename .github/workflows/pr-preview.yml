@@ -1,0 +1,220 @@
+name: PR preview (Cloudflare Pages)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches: [master]
+
+permissions:
+  contents: read
+
+# One preview build per PR branch; supersede stale runs
+concurrency:
+  group: preview-${{ github.head_ref }}
+  cancel-in-progress: true
+
+env:
+  CF_PROJECT: ${{ vars.CLOUDFLARE_PROJECT_NAME }}
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Gate: skip everything unless Cloudflare credentials are actually present.
+  # Secrets cannot be referenced in a job-level `if`, so this job exposes them
+  # as an output instead.
+  # ---------------------------------------------------------------------------
+  guard:
+    name: Check Cloudflare config
+    runs-on: ubuntu-latest
+    outputs:
+      configured: ${{ steps.check.outputs.configured }}
+    steps:
+      - id: check
+        env:
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -n "${CF_API_TOKEN}" ] && [ -n "${CF_ACCOUNT_ID}" ] && [ -n "${CF_PROJECT}" ]; then
+            echo "configured=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "configured=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Cloudflare secrets not configured - preview deploy skipped."
+          fi
+
+  # ---------------------------------------------------------------------------
+  # Build and deploy a preview on every push to an open PR
+  # ---------------------------------------------------------------------------
+  preview:
+    name: Build & deploy preview
+    needs: guard
+    # Fork PRs get no secrets, and an unconfigured repo should skip, not fail
+    if: >-
+      needs.guard.outputs.configured == 'true' &&
+      github.event.action != 'closed' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      deployments: write
+    environment:
+      name: preview
+      url: ${{ steps.deploy.outputs.pages-deployment-alias-url }}
+    steps:
+      - name: Checkout PR head
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build static site
+        run: npm run build
+        env:
+          # Cloudflare serves previews from the domain root, so no subpath prefix
+          BASE_PATH: /
+          NODE_ENV: production
+
+      - name: Deploy to Cloudflare Pages
+        id: deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # Change ./dist to match your framework's output directory
+          command: >-
+            pages deploy ./dist
+            --project-name=${{ env.CF_PROJECT }}
+            --branch=${{ github.head_ref }}
+            --commit-dirty=true
+
+      - name: Comment preview URL on PR
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: cf-pages-preview
+          message: |
+            ### ⚡ Cloudflare Pages preview deployed
+
+            | | |
+            |---|---|
+            | **Branch preview** | ${{ steps.deploy.outputs.pages-deployment-alias-url }} |
+            | **This build** | ${{ steps.deploy.outputs.deployment-url }} |
+            | **Commit** | `${{ github.event.pull_request.head.sha }}` |
+            | **Run** | [View workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) |
+
+            The branch preview URL is stable and updates on every push to this PR.
+
+  # ---------------------------------------------------------------------------
+  # Tear down every preview deployment for this branch once the PR closes
+  # ---------------------------------------------------------------------------
+  cleanup:
+    name: Delete preview deployments
+    needs: guard
+    if: >-
+      needs.guard.outputs.configured == 'true' &&
+      github.event.action == 'closed' &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      deployments: write
+    steps:
+      - name: Delete Cloudflare preview deployments for branch
+        env:
+          CF_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          BRANCH: ${{ github.head_ref }}
+        run: |
+          set -euo pipefail
+
+          if [ -z "${BRANCH}" ]; then
+            echo "::error::Empty branch name; refusing to run deletion."
+            exit 1
+          fi
+
+          API="https://api.cloudflare.com/client/v4/accounts/${CF_ACCOUNT_ID}/pages/projects/${CF_PROJECT}/deployments"
+          AUTH="Authorization: Bearer ${CF_API_TOKEN}"
+
+          echo "Collecting preview deployments for branch: ${BRANCH}"
+
+          ids=""
+          page=1
+          while :; do
+            resp=$(curl -sS -H "${AUTH}" "${API}?page=${page}&per_page=100")
+
+            if [ "$(echo "${resp}" | jq -r '.success')" != "true" ]; then
+              echo "::error::Cloudflare API error: $(echo "${resp}" | jq -c '.errors')"
+              exit 1
+            fi
+
+            count=$(echo "${resp}" | jq '.result | length')
+            [ "${count}" -eq 0 ] && break
+
+            # Match on branch AND preview environment so production is never touched
+            match=$(echo "${resp}" | jq -r --arg b "${BRANCH}" '
+              .result[]
+              | select(.environment == "preview")
+              | select(.deployment_trigger.metadata.branch == $b)
+              | .id')
+
+            [ -n "${match}" ] && ids="${ids}${match}"$'\n'
+            page=$((page + 1))
+          done
+
+          ids=$(echo "${ids}" | sed '/^$/d')
+
+          if [ -z "${ids}" ]; then
+            echo "No preview deployments found for ${BRANCH}. Nothing to do."
+            echo "🧹 No Cloudflare preview deployments to delete for \`${BRANCH}\`." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          total=$(echo "${ids}" | wc -l | tr -d ' ')
+          echo "Found ${total} deployment(s) to delete."
+
+          deleted=0
+          failed=0
+          while read -r id; do
+            [ -z "${id}" ] && continue
+            # force=true is required to remove deployments holding a branch alias
+            out=$(curl -sS -X DELETE -H "${AUTH}" "${API}/${id}?force=true")
+            if [ "$(echo "${out}" | jq -r '.success')" = "true" ]; then
+              echo "  deleted ${id}"
+              deleted=$((deleted + 1))
+            else
+              echo "::warning::Failed to delete ${id}: $(echo "${out}" | jq -c '.errors')"
+              failed=$((failed + 1))
+            fi
+            sleep 0.25   # stay under the API rate limit
+          done <<< "${ids}"
+
+          {
+            echo "### 🧹 Cloudflare preview cleanup"
+            echo ""
+            echo "| Branch | Deleted | Failed |"
+            echo "|---|---|---|"
+            echo "| \`${BRANCH}\` | ${deleted} | ${failed} |"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Update PR comment
+        if: always()
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: cf-pages-preview
+          message: |
+            ### 🧹 Preview environment torn down
+
+            Cloudflare Pages preview deployments for `${{ github.head_ref }}` were deleted when this PR closed.
+
+      - name: Deactivate GitHub deployment records
+        if: always()
+        uses: strumwolf/delete-deployment-environment@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          environment: preview
+          onlyRemoveDeployments: true
