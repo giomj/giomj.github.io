@@ -164,9 +164,12 @@ export default {
 </script>
 
 <style scoped>
-.landing { color:#e6f7ff }
-.landing h2 { margin: 0 0 8px 0 }
-.landing p { margin:0 0 12px 0;color:#cfeefb }
+/* Page sits on the default white body, so text must be dark.
+   The previous near-white values (#e6f7ff / #cfeefb) rendered at a
+   contrast ratio of ~1.1:1 and were effectively invisible. */
+.landing { color:#0b1220 }
+.landing h2 { margin: 0 0 8px 0; color:#0b1220 }
+.landing p { margin:0 0 12px 0;color:#475569 }
 canvas { display:block; width:100%; height:100% }
 button { background:#0b84ff;color:#fff;border:none;padding:6px 10px;border-radius:6px }
 </style>
